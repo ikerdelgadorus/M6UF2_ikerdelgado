@@ -16,30 +16,40 @@ public class Controller {
 		this.conn = ConnectionManager.getConnection("database.xml");
 		MainView mainView = new MainView();
 		UserPgDAO userPgDAO = new UserPgDAO(conn);
+		SportPgDAO sportPgDAO = new SportPgDAO(conn);
+		SportmanPgDAO sportmanPgDAO = new SportmanPgDAO(conn);
+		int option;
 
-		int option = mainView.mainMenu();
-		// switch option
-		switch (option) {
-			case 1:
-					mainView.showUsers(userPgDAO.getAll());
-				break;
-			
-			case 2:
-					User newUser = mainView.addUserForm();
-					if (newUser != null){
-						userPgDAO.add(newUser);
+		do { 
+			option = mainView.mainMenu();
+			// switch option
+			switch (option) {
+				case 0:
+					// MainView sortir 
+					break;
+				case 1:
+					Sport newSport = mainView.addSportForm();
+					if (newSport != null){
+						sportPgDAO.add(newSport);
 					}
-					else{
-						//mainView.showError("Error al crear l'usuari");
+					break;
+				case 2:
+					mainView.showSports(sportPgDAO.getAll());
+					Sportman newSportman = mainView.addSportmanForm();
+					if (newSportman != null){
+						sportmanPgDAO.add(newSportman);
 					}
+					break;
+				case 3:
+					mainView.showSports(sportPgDAO.getAll());
+					int sp = mainView.obtainSport();
+					mainView.showSportmans(sportmanPgDAO.getBySport(sp));
+					break;
+				default:
+					// Parlar del error
+					break;
+			}
+		} while (option != 0);
 		
-			default:
-				break;
-		}
-		// Afegir Usuari
-		// Llistar usuaris
-
-
-
 	}
 }

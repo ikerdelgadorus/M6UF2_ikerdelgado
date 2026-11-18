@@ -1,10 +1,9 @@
 package dam.m6.uf2;
 
 
-import java.sql.SQLException;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class ConnectionManager {
     private static String host = "";   
@@ -19,7 +18,7 @@ public class ConnectionManager {
     }
 
     public static Connection getConnection(String config_file) {
-        ReadConfigXML config =  new ReadConfigXML(config_file);
+        ReadConfigXML config = new ReadConfigXML(config_file);
 
         host = config.getHost();
         port = config.getPort();
@@ -27,7 +26,7 @@ public class ConnectionManager {
         username = config.getUser();
         password = config.getPassword();
 
-        urlstring = "jdbc:....et...etc"; // Aquí heu de construir la URL de connexió
+        urlstring = "jdbc:postgresql://" + host + ":" + port + "/" + database; // Aquí heu de construir la URL de connexió
 
 
         System.out.println("DEBUG: Dades obtingudes del fitxer XML -> "+ host + " / " + port + " / "+ database + " / "+ username);
@@ -35,10 +34,12 @@ public class ConnectionManager {
 
         try {
             try {
-                // Aqui heu de connectar amb la base de dades
-                //System.out.println("Connection established successfully.");
-                throw new SQLException("Not implemented yet" );
-
+                con = DriverManager.getConnection(urlstring, username, password);
+                if (con != null) {
+                    System.out.println("Connexió establerta amb èxit a PostgreSQL!");
+                } else {
+                    throw new SQLException("Not implemented yet" );
+                }            
             } catch (SQLException ex) {
                 // log an exception. fro example:
                 System.out.println("Failed to create the database connection."); 

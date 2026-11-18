@@ -1,8 +1,7 @@
-
 <cb-config>
     <host>localhost</host>
     <port>5432</port>
-    <user>alex</user>
-    <password>1234</password>
-    <database>user</database>
+    <user>admin@admin.com</user>
+    <password>admin</password>
+    <database>esports</database>
  </cb-config>
