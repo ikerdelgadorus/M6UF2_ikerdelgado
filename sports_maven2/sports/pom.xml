@@ -33,12 +33,26 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
+      <!-- Hibernate Core -->
+      <dependency>
+          <groupId>org.hibernate.orm</groupId>
+          <artifactId>hibernate-core</artifactId>
+          <version>6.5.0.Final</version>
+      </dependency>
 
-              <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>42.7.8</version>
-            </dependency>
+      <!-- Jakarta Persistence API -->
+      <dependency>
+          <groupId>jakarta.persistence</groupId>
+          <artifactId>jakarta.persistence-api</artifactId>
+          <version>3.1.0</version>
+      </dependency>
+
+      <!-- Postgres -->
+      <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>42.7.8</version>
+      </dependency>
   </dependencies>
   <build>
     <plugins>
