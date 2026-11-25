@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity 
 @Table(name = "Deportistas") 
-public class Sportman {
+public class Sportman implements java.io.Serializable {
 
     @Id 
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
