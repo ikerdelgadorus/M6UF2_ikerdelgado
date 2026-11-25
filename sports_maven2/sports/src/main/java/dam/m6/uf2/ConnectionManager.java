@@ -5,6 +5,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
 public class ConnectionManager {
     private static String host = "";   
     private static String port = "";
@@ -51,5 +54,7 @@ public class ConnectionManager {
         return con;
     }
 
-
+    public static SessionFactory getSession() {
+        return new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Sport.class).addAnnotatedClass(Sportman.class).buildSessionFactory();
+    }
 }

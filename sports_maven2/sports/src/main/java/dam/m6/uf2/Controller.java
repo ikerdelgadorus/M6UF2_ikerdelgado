@@ -2,8 +2,11 @@ package dam.m6.uf2;
 
 import java.sql.Connection;
 
+import org.hibernate.SessionFactory;
+
 public class Controller {
 	Connection conn;
+	SessionFactory sessionFactory;
 
 	public static void main(String[] args) { 
 		System.out.println("Current directory (aquí heu de posar el XML): " + System.getProperty("user.dir"));
@@ -13,11 +16,13 @@ public class Controller {
 
 	private void init() {
 
-		this.conn = ConnectionManager.getConnection("database.xml");
+
+		this.conn = ConnectionManager.getConnection("database.xml"); 
+		this.sessionFactory = ConnectionManager.getSession();
 		MainView mainView = new MainView();
-		UserPgDAO userPgDAO = new UserPgDAO(conn);
-		SportPgDAO sportPgDAO = new SportPgDAO(conn);
-		SportmanPgDAO sportmanPgDAO = new SportmanPgDAO(conn);
+		//UserPgDAO userPgDAO = new UserPgDAO(conn);
+		SportPgDAO sportPgDAO = new SportPgDAO(sessionFactory);
+		SportmanPgDAO sportmanPgDAO = new SportmanPgDAO(sessionFactory);
 		int option;
 
 		do { 

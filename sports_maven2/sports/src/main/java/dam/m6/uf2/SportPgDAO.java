@@ -1,22 +1,27 @@
 package dam.m6.uf2;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-public class SportPgDAO implements DAO<Sport> {
-    private Connection conn;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
-    public SportPgDAO(Connection conn){
+public class SportPgDAO implements DAO<Sport> {
+    //private Connection conn;
+    private SessionFactory sessionFactory;
+
+    /*public SportPgDAO(Connection conn){
         this.conn = conn;
+    }*/
+
+    public SportPgDAO(SessionFactory session){
+        this.sessionFactory = session;
     }
 
     @Override 
     public void add(Sport s){
-        if (conn == null) return;
+        /*if (conn == null) return;
 
         String sql = "INSERT INTO deportes (nombre) VALUES (?)";
         try {
@@ -26,12 +31,24 @@ public class SportPgDAO implements DAO<Sport> {
             System.out.println("Update: " + rst);
         } catch (SQLException e) {
             System.err.println("Error al crear esport: " + e.getMessage());
+        }*/
+
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            session.save(s);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
         }
     }
 
     @Override 
     public List<Sport> getAll() {
-        List<Sport> sports = new ArrayList<>();
+        /*List<Sport> sports = new ArrayList<>();
 
         String sql = "SELECT * FROM deportes";
         try {
@@ -45,9 +62,14 @@ public class SportPgDAO implements DAO<Sport> {
 
         } catch (SQLException e) {
             System.err.println("Error al buscar esports: " + e.getMessage());
+        }*/
+
+        try (Session session = sessionFactory.openSession()) {
+            Query<Sport> query = session.createQuery("FROM Sport", Sport.class);
+            return query.getResultList();
         }
 
-        return sports;
+        //return sports;
     }
 }
 

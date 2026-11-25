@@ -1,22 +1,27 @@
 package dam.m6.uf2;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-public class SportmanPgDAO implements DAO<Sportman> {
-    private Connection conn;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
-    public SportmanPgDAO(Connection conn){
+public class SportmanPgDAO implements DAO<Sportman> {
+    //private Connection conn;
+    private SessionFactory sessionFactory;
+
+    /*public SportmanPgDAO(Connection conn){
         this.conn = conn;
+    }*/
+
+    public SportmanPgDAO(SessionFactory session){
+        this.sessionFactory = session;
     }
 
     @Override 
     public void add(Sportman s){
-        if (conn == null) return;
+        /*if (conn == null) return;
 
         String sql = "INSERT INTO deportistas (nombre, cod_deporte) VALUES (?, ?)";
         try {
@@ -27,12 +32,24 @@ public class SportmanPgDAO implements DAO<Sportman> {
             System.out.println("Update: " + rst);
         } catch (SQLException e) {
             System.err.println("Error al buscar usuaris: " + e.getMessage());
+        }*/
+
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            session.save(s);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
         }
     }
 
     @Override
     public List<Sportman> getAll() {
-        List<Sportman> sportmans = new ArrayList<>();
+        /*List<Sportman> sportmans = new ArrayList<>();
 
         String sql = "SELECT * FROM deportistas";
         try {
@@ -48,11 +65,16 @@ public class SportmanPgDAO implements DAO<Sportman> {
             System.err.println("Error al buscar deportistes: " + e.getMessage());
         }
 
-        return sportmans;
+        return sportmans;*/
+
+        try (Session session = sessionFactory.openSession()) {
+            Query<Sportman> query = session.createQuery("FROM Sportman", Sportman.class);
+            return query.getResultList();
+        }
     }
 
     public List<Sportman> getBySport(int sport){
-        List<Sportman> sportmans = new ArrayList<>();
+        /*List<Sportman> sportmans = new ArrayList<>();
 
         String sql = "SELECT * FROM deportistas WHERE cod_deporte = " + sport;
         try {
@@ -68,7 +90,12 @@ public class SportmanPgDAO implements DAO<Sportman> {
             System.err.println("Error al buscar deportistes: " + e.getMessage());
         }
 
-        return sportmans;
+        return sportmans;*/
+
+        try (Session session = sessionFactory.openSession()) {
+            Query<Sportman> query = session.createQuery("FROM Sportman WHERE cod_sport = :sport_cod", Sportman.class);
+            query.setParameter("sport_cod", sport);
+            return query.getResultList();
+        }
     }
 }
-
